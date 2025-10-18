@@ -100,7 +100,7 @@
 <body>
   <!-- 🎥 Background Video -->
   <video autoplay muted loop id="bg-video">
-    <source src="../assets/startbootstrap-sb-admin-2-master/img/vidio bc.mp4" type="video/mp4">
+    <source src="../assets/startbootstrap-sb-admin-2-master/img/vid_car.mp4" type="video/mp4">
     Your browser does not support the video tag.
   </video>
 
