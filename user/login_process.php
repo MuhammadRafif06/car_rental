@@ -16,6 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['id'] = $data['id_admin'];
         $_SESSION['nama'] = $data['nama_admin'];
         $_SESSION['role'] = 'admin';
+        $_SESSION['user_id'] = $data['id_admin']; // 🔹 tambahan biar universal
         header("Location: ../admin/dashboard.php");
         exit;
     }
@@ -29,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['id'] = $data['id_staff'];
         $_SESSION['nama'] = $data['nama_staff'];
         $_SESSION['role'] = 'staff';
+        $_SESSION['user_id'] = $data['id_staff']; // 🔹 tambahan biar bisa dipakai di sewa.php juga
         header("Location: ../staff/dashboard.php");
         exit;
     }
@@ -42,6 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['id'] = $data['id_penyewa'];
         $_SESSION['nama'] = $data['nama_penyewa'];
         $_SESSION['role'] = 'penyewa';
+        $_SESSION['user_id'] = $data['id_penyewa']; // 🔹 ini bagian penting biar bisa dipanggil di sewa.php
         header("Location: ../user/index.php");
         exit;
     }
