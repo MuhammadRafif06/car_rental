@@ -200,8 +200,8 @@ if (!$result) {
 
 
   <footer>
-    <p>© 2025 CarRental | Designed with ❤ APIP DAN😘</p>
-  </footer> APIP CAYANG AYA dan aya JUGAAA MANTEPPP
+    <p>© 2025 CarRental</p>
+  </footer>
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>

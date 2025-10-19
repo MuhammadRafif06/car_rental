@@ -33,6 +33,24 @@ $result = $stmt->get_result();
 </head>
 
 <body class="bg-dark text-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">CarRental</a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a href="index.php" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="#cars" class="nav-link">Cars</a></li>
+          <li class="nav-item"><a href="riwayat.php" class="nav-link">History</a></li>
+          <li class="nav-item"><a href="../logout.php" class="nav-link text-danger">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
   <div class="container py-5">
     <h2 class="text-center mb-4">Riwayat Booking Anda</h2>
 
