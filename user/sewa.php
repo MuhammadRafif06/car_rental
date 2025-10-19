@@ -15,7 +15,7 @@ if (!$id_mobil) {
   die("Mobil tidak ditemukan!");
 }
 
-// ambil data mobil
+
 $query = $conn->prepare("SELECT * FROM mobil WHERE id_mobil = ?");
 $query->bind_param("i", $id_mobil);
 $query->execute();
@@ -25,14 +25,14 @@ if (!$mobil) {
   die("Mobil tidak ditemukan di database!");
 }
 
-// cek apakah foto dari URL atau lokal
+
 $foto = $mobil['gambar'] ?? 'default.jpg';
 if (!preg_match('/^https?:\/\//', $foto)) {
-  $foto = "../assets/img/" . $foto;  // <- ubah sesuai folder tempat gambar kamu
+  $foto = "../assets/img/" . $foto;  // 
 }
 
 
-// proses submit form
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $tanggal_mulai = $_POST['tanggal_mulai'];
   $tanggal_selesai = $_POST['tanggal_selesai'];
@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($stmt->execute()) {
     $id_booking = $conn->insert_id;
 
-    // update booking dengan metode pembayaran & tanggal bayar
+   
     $update = $conn->prepare("
     UPDATE booking
     SET metode_pembayaran = ?, tanggal_bayar = NOW()
@@ -141,12 +141,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </form>
     </div>
 
-    <!-- kanan: ringkasan mobil -->
+    
     <div class="col-lg-5">
       <div class="card shadow-sm border-0 card-custom">
       <?php
         $foto = $mobil['foto_mobil'];
-        // kalau bukan link (tidak diawali http), berarti ambil dari folder lokal
+       
         if (!preg_match('/^https?:\/\//', $foto)) {
         $foto = "../assets/img/" . $foto;
         }
@@ -169,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </div>
 </div>
 
-    <!--Menghitung Total Sewa-->
+    
 <script>
   const hargaPerHari = <?= $mobil['harga_sewa_per_hari']; ?>;
   const tMulai = document.getElementById('tanggal_mulai');

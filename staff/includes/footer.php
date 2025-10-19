@@ -1,9 +1,9 @@
-</div> <!-- end content-wrapper -->
-  </div> <!-- end wrapper -->
+</div> <!-- End of Main Content -->
+</div> <!-- End of Content Wrapper -->
 
-  <!-- jQuery, Bootstrap, SB Admin JS -->
-  <script src="../assets/startbootstrap-sb-admin-2-master/vendor/jquery/jquery.min.js"></script>
-  <script src="../assets/startbootstrap-sb-admin-2-master/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="../assets/startbootstrap-sb-admin-2-master/js/sb-admin-2.min.js"></script>
+<script src="../assets/startbootstrap-sb-admin-2-master/vendor/jquery/jquery.min.js"></script>
+<script src="../assets/startbootstrap-sb-admin-2-master/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+<script src="../assets/startbootstrap-sb-admin-2-master/js/sb-admin-2.min.js"></script>
+
 </body>
 </html>

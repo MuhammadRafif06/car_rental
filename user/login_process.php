@@ -8,8 +8,7 @@ $conn = getConnection();
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email']);
     $password = trim($_POST['password']);
-
-    // 1️⃣ cek di tabel admin
+    
     $sql = "SELECT * FROM admin WHERE email = ? AND password = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $email, $password);
@@ -43,7 +42,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // 3️⃣ cek di tabel penyewa
     $sql = "SELECT * FROM penyewa WHERE email = ? AND password = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $email, $password);
@@ -60,9 +58,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // kalau gak cocok
     echo "<script>alert('Email atau password salah'); window.location.href='login.php';</script>";
 } else {
     echo "Akses tidak diizinkan langsung ke halaman ini!";
 }
 ?>
+
