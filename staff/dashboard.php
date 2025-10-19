@@ -1,124 +1,60 @@
 <?php
-session_start();
-require_once __DIR__ . '/../config/db.php';
-
-// 🧠 Debug sementara (lihat session login aktif apa belum)
-// HAPUS nanti kalau udah gak perlu
-// echo "<pre>"; var_dump($_SESSION); echo "</pre>";
-
-// 🔒 Pastikan hanya staff yang bisa akses
-if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'staff') {
-  header("Location: ../login.php");
-  exit;
-}
-
-// 🔌 Koneksi ke database
+require_once(__DIR__ . '/../config/db.php');
 $conn = getConnection();
 
-// 🧑‍💻 Ambil data staff yang login
-$id_staff = $_SESSION['id'];
+include 'includes/header.php';
+include 'includes/sidebar_staff.php';
+include 'includes/topbar.php';
 
-$sql = "SELECT * FROM staff_penyewaan WHERE id_staff = ?";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $id_staff);
-$stmt->execute();
-$result = $stmt->get_result();
-$staff = $result->fetch_assoc();
+$total_booking = $conn->query("SELECT COUNT(*) AS total FROM booking")->fetch_assoc()['total'];
+$berjalan = $conn->query("SELECT COUNT(*) AS total FROM booking WHERE status='Berjalan'")->fetch_assoc()['total'];
+$selesai = $conn->query("SELECT COUNT(*) AS total FROM booking WHERE status='Selesai'")->fetch_assoc()['total'];
+$total_penyewa = $conn->query("SELECT COUNT(*) AS total FROM penyewa")->fetch_assoc()['total'];
 
-// Kalau data staff gak ditemukan (misalnya udah dihapus)
-if (!$staff) {
-  echo "<script>alert('Data staff tidak ditemukan!'); window.location.href='../logout.php';</script>";
-  exit;
-}
+$booking = $conn->query("
+  SELECT b.id_booking, m.nama_mobil, p.nama_penyewa AS penyewa, 
+         b.tanggal_mulai, b.tanggal_selesai, b.status
+  FROM booking b
+  JOIN mobil m ON b.id_mobil = m.id_mobil
+  JOIN penyewa p ON b.id_penyewa = p.id_penyewa
+  ORDER BY b.tanggal_dibuat DESC
+");
 ?>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Staff</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-  <style>
-    body {
-      background-color: #121212;
-      color: #fff;
-      font-family: 'Poppins', sans-serif;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
+<div class="container-fluid">
+  <h1 class="h3 mb-4 text-gray-800">Dashboard Staff</h1>
 
-    .navbar {
-      background-color: #000;
-    }
-
-    .card {
-      background-color: #1e1e1e;
-      border: 1px solid #333;
-      border-radius: 15px;
-      color: #fff;
-      box-shadow: 0 0 15px rgba(255, 255, 255, 0.05);
-    }
-
-    .btn-custom {
-      background-color: #ff0000;
-      color: #fff;
-      border-radius: 10px;
-      border: none;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .btn-custom:hover {
-      background-color: #fff;
-      color: #000;
-    }
-
-    footer {
-      margin-top: auto;
-      text-align: center;
-      color: #888;
-      padding: 15px 0;
-    }
-  </style>
-</head>
-
-<body>
-  <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="#">Staff Dashboard</a>
-      <div class="collapse navbar-collapse justify-content-end">
-        <ul class="navbar-nav">
-          <li class="nav-item">
-            <a href="../logout.php" class="nav-link text-danger fw-bold">Logout</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Content -->
-  <div class="container mt-5">
-    <h1 class="text-center mb-4">Halo, <?= htmlspecialchars($staff['nama_staff']); ?> 👋</h1>
-
-    <div class="row justify-content-center">
-      <div class="col-md-6">
-        <div class="card p-4 text-center">
-          <h4 class="fw-bold mb-3">Menu Staff</h4>
-          <p>Email: <?= htmlspecialchars($staff['email']); ?></p>
-          <p>Tanggal dibuat: <?= htmlspecialchars($staff['tgl_dibuat']); ?></p>
-          <a href="kelola_penyewaan.php" class="btn btn-custom mt-3 w-100">
-            🚗 Kelola Penyewaan Mobil
-          </a>
-        </div>
-      </div>
-    </div>
+  <div class="row mb-4">
+    <div class="col-md-3"><div class="card bg-primary text-white p-3">Total Booking: <?= $total_booking ?></div></div>
+    <div class="col-md-3"><div class="card bg-warning text-white p-3">Berjalan: <?= $berjalan ?></div></div>
+    <div class="col-md-3"><div class="card bg-success text-white p-3">Selesai: <?= $selesai ?></div></div>
+    <div class="col-md-3"><div class="card bg-info text-white p-3">Total Penyewa: <?= $total_penyewa ?></div></div>
   </div>
 
-  <footer>
-    <p>© 2025 CarRental | Staff Portal</p>
-  </footer>
-</body>
-</html>
+  <div class="card shadow mb-4">
+    <div class="card-header bg-primary text-white">Penyewaan Terbaru</div>
+    <div class="card-body">
+      <table class="table table-bordered">
+        <thead>
+          <tr>
+            <th>ID</th><th>Mobil</th><th>Penyewa</th><th>Tgl Mulai</th><th>Tgl Selesai</th><th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php while ($row = $booking->fetch_assoc()): ?>
+          <tr>
+            <td><?= $row['id_booking'] ?></td>
+            <td><?= $row['nama_mobil'] ?></td>
+            <td><?= $row['penyewa'] ?></td>
+            <td><?= $row['tanggal_mulai'] ?></td>
+            <td><?= $row['tanggal_selesai'] ?></td>
+            <td><?= $row['status'] ?></td>
+          </tr>
+          <?php endwhile; ?>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<?php include 'includes/footer.php'; ?>
