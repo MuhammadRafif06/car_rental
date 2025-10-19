@@ -3,86 +3,95 @@ session_start();
 require_once __DIR__ . '/../config/db.php';
 $conn = getConnection();
 
-if (!isset($_SESSION['id']) || $_SESSION['role'] !== 'penyewa') {
-  header("Location: ../login.php");
+if (!isset($_SESSION['id'])) {
+  header("Location: login.php");
   exit;
 }
 
 $id_penyewa = $_SESSION['id'];
 
-$query = "
-  SELECT b.*, m.nama_mobil, m.merek
+// ambil data riwayat booking langsung dari tabel booking
+$query = $conn->prepare("
+  SELECT 
+    b.id_booking,
+    m.nama_mobil,
+    m.merek,
+    b.tanggal_mulai,
+    b.tanggal_selesai,
+    b.total_harga,
+    b.metode_pembayaran,
+    b.tanggal_bayar,
+    b.status
   FROM booking b
   JOIN mobil m ON b.id_mobil = m.id_mobil
   WHERE b.id_penyewa = ?
   ORDER BY b.tanggal_dibuat DESC
-";
-$stmt = $conn->prepare($query);
-$stmt->bind_param("i", $id_penyewa);
-$stmt->execute();
-$result = $stmt->get_result();
+");
+$query->bind_param("i", $id_penyewa);
+$query->execute();
+$result = $query->get_result();
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Riwayat Booking</title>
+  <title>Riwayat Penyewaan</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<body class="bg-light">
 
-<body class="bg-dark text-light">
+<div class="container py-5">
+  <h2 class="fw-bold mb-4">Riwayat Penyewaan Mobil</h2>
 
-<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-    <div class="container">
-      <a class="navbar-brand fw-bold" href="#">CarRental</a>
-      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a href="index.php" class="nav-link">Home</a></li>
-          <li class="nav-item"><a href="#cars" class="nav-link">Cars</a></li>
-          <li class="nav-item"><a href="riwayat.php" class="nav-link">History</a></li>
-          <li class="nav-item"><a href="../logout.php" class="nav-link text-danger">Logout</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <div class="container py-5">
-    <h2 class="text-center mb-4">Riwayat Booking Anda</h2>
-
-    <table class="table table-dark table-striped align-middle">
-      <thead>
-        <tr>
-          <th>Mobil</th>
-          <th>Tanggal Mulai</th>
-          <th>Tanggal Selesai</th>
-          <th>Total Harga</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody>
-        <?php while ($row = $result->fetch_assoc()) { ?>
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <table class="table table-bordered table-striped align-middle">
+        <thead class="table-dark">
           <tr>
-            <td><?= htmlspecialchars($row['nama_mobil']); ?> (<?= htmlspecialchars($row['merek']); ?>)</td>
-            <td><?= htmlspecialchars($row['tanggal_mulai']); ?></td>
-            <td><?= htmlspecialchars($row['tanggal_selesai']); ?></td>
-            <td>Rp <?= number_format($row['total_harga'], 0, ',', '.'); ?></td>
-            <td>
-              <span class="badge 
-                <?= $row['status'] == 'pending' ? 'bg-warning' : 
-                    ($row['status'] == 'approved' ? 'bg-success' : 
-                    ($row['status'] == 'rejected' ? 'bg-danger' : 'bg-secondary')); ?>">
-                <?= strtoupper($row['status']); ?>
-              </span>
-            </td>
+            <th>ID Booking</th>
+            <th>Mobil</th>
+            <th>Tanggal Mulai</th>
+            <th>Tanggal Selesai</th>
+            <th>Total Harga</th>
+            <th>Metode Pembayaran</th>
+            <th>Tanggal Bayar</th>
+            <th>Status</th>
           </tr>
-        <?php } ?>
-      </tbody>
-    </table>
+        </thead>
+        <tbody>
+          <?php if ($result->num_rows > 0): ?>
+            <?php while ($row = $result->fetch_assoc()): ?>
+              <tr>
+                <td><?= htmlspecialchars($row['id_booking']); ?></td>
+                <td><?= htmlspecialchars($row['nama_mobil'] . ' - ' . $row['merek']); ?></td>
+                <td><?= htmlspecialchars($row['tanggal_mulai']); ?></td>
+                <td><?= htmlspecialchars($row['tanggal_selesai']); ?></td>
+                <td>Rp <?= number_format($row['total_harga'], 0, ',', '.'); ?></td>
+                <td><?= htmlspecialchars($row['metode_pembayaran'] ?? '-'); ?></td>
+                <td><?= htmlspecialchars($row['tanggal_bayar'] ?? '-'); ?></td>
+                <td>
+                  <?php
+                    $statusClass = match($row['status']) {
+                      'dipesan' => 'warning',
+                      'berjalan' => 'primary',
+                      'selesai' => 'success',
+                      'dibatalkan' => 'danger',
+                      default => 'secondary'
+                    };
+                  ?>
+                  <span class="badge bg-<?= $statusClass; ?>"><?= ucfirst($row['status']); ?></span>
+                </td>
+              </tr>
+            <?php endwhile; ?>
+          <?php else: ?>
+            <tr><td colspan="8" class="text-center text-muted">Belum ada riwayat penyewaan</td></tr>
+          <?php endif; ?>
+        </tbody>
+      </table>
+    </div>
   </div>
+</div>
+
 </body>
 </html>

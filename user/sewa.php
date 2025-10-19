@@ -51,12 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($stmt->execute()) {
     $id_booking = $conn->insert_id;
 
-    $pstmt = $conn->prepare("
-      INSERT INTO pembayaran (id_booking, metode_pembayaran, total_bayar, tanggal_bayar)
-      VALUES (?, ?, ?, NOW())
+    // update booking dengan metode pembayaran & tanggal bayar
+    $update = $conn->prepare("
+    UPDATE booking
+    SET metode_pembayaran = ?, tanggal_bayar = NOW()
+    WHERE id_booking = ?
     ");
-    $pstmt->bind_param("isd", $id_booking, $metode_pembayaran, $total_harga);
-    $pstmt->execute();
+    $update->bind_param("si", $metode_pembayaran, $id_booking);
+    $update->execute();
+
 
     echo "<script>alert('✅ Booking berhasil!'); window.location.href='riwayat.php';</script>";
     exit;
@@ -73,12 +76,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <title>Sewa Mobil</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <style>
+
+    .navbar {
+        background-color: rgba(0, 0, 0, 0.9)
+    }
     .card-custom { border-radius: 14px; }
     .form-label { font-weight: 600; }
     .harga-box { background: #f8f9fa; padding: 10px 15px; border-radius: 10px; }
   </style>
 </head>
 <body class="bg-light">
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+    <div class="container">
+      <a class="navbar-brand fw-bold" href="#">CarRental</a>
+      <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+        <ul class="navbar-nav">
+          <li class="nav-item"><a href="#home" class="nav-link">Home</a></li>
+          <li class="nav-item"><a href="#cars" class="nav-link">Cars</a></li>
+          <li class="nav-item"><a href="riwayat.php" class="nav-link">History</a></li>
+          <li class="nav-item"><a href="../logout.php" class="nav-link text-danger">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
 
 <div class="container py-5">
     <div class="row g-4 align-items-center justify-content-between">
