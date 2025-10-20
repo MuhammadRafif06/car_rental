@@ -8,7 +8,7 @@ if (!isset($_SESSION['id'])) {
   exit;
 }
 
-$id_penyewa = $_SESSION['id'];
+$id_penyewa = $_SESSION['id_penyewa'];
 $id_mobil = $_GET['id'] ?? null;
 
 if (!$id_mobil) {
