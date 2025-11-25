@@ -6,13 +6,13 @@ function getConnection() {
     static $conn = null;
 
     if ($conn === null) {
-        $host = 'localhost';
-        $user = 'root';
-        $pass = ''; // isi kalau MySQL lo pakai password
-        $db   = 'car_rental';
+        $DB_HOST = getenv('DB_HOST') ?: 'mysql';
+        $DB_USER = getenv('DB_USER') ?: 'root';
+        $DB_PASS = getenv('DB_PASSWORD') ?: 'password';
+        $DB_NAME = getenv('DB_NAME') ?: 'car_rental';
+        $DB_PORT = getenv('DB_PORT') ?: 3306;
 
-        $conn = new mysqli($host, $user, $pass, $db);
-
+        $conn = mysqli_connect($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME, $DB_PORT);
         if ($conn->connect_error) {
             die("❌ koneksi gagal: " . $conn->connect_error);
         }
