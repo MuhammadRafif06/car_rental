@@ -8,7 +8,7 @@ include 'includes/topbar.php';
 ?>
 
 <div class="container-fluid">
-    <h1 class="h3 mb-4 text-gray-800">Data Penyewaan (Booking)</h1>
+    <h1 class="h3 mb-4 text-gray-800">Data Penyewaann (Booking)</h1>
 
     <div class="card shadow mb-4">
         <div class="card-header py-3 bg-primary text-white">
