@@ -84,7 +84,7 @@
     }
 
     .nav-link:hover {
-      color: #0b0404ff;
+      color: #b91b1bff;
     }
 
     /* ===== TENGAHIN FORM LOGIN ===== */
