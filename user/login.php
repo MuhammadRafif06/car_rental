@@ -109,7 +109,7 @@
     <div class="col-10 col-sm-8 col-md-5 col-lg-4">
       <div class="card border-0 shadow-lg">
         <div class="card-body">
-          <h3 class="text-center mb-4 fw-bold">Login to CarRental</h3>
+          <h3 class="text-center mb-4 fw-bold">Login to Car Rental</h3>
 
           <form action="login_process.php" method="post">
             <input type="text" name="email" class="form-control my-3 py-2" placeholder="Email" required>
