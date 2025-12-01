@@ -152,7 +152,7 @@ if (!$result) {
       <source src="../assets/startbootstrap-sb-admin-2-master/img/bag_prof.mp4" type="video/mp4">
     </video>
     <div class="text-center">
-      <h1>Explore Most Popular Cars</h1>
+      <h1>Explore Most Popular Vehicle</h1>
       <p>Find and rent your dream car easily, anytime, anywhere.</p>
     </div>
   </section>
