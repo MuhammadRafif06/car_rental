@@ -31,7 +31,7 @@
 
     /* ===== CARD LOGIN ===== */
     .card {
-      background: rgba(20, 20, 20, 0.7); /* lembut abu kehitaman */
+      background: rgba(86, 22, 22, 0.7); /* lembut abu kehitaman */
       backdrop-filter: blur(8px);
       color: white;
       border-radius: 15px;
